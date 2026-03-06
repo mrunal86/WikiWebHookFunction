@@ -17,24 +17,19 @@ public class WikiWebhookFunction
     }
 
     [Function("GitHubWikiWebhook")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
     {
         _logger.LogInformation("Github webhook received.");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-        var payload = System.Text.Json.JsonSerializer.Deserialize<GitHubWikiEventPayload>(requestBody);
-
-        if(payload?.pages != null)
-        {
-            foreach(var page in payload.pages)
-            {
-                //_logger.LogInformation($"Wiki page '{page.page_name}' was {page.action} by {payload.sender.login}.");
-                _logger.LogInformation($"Wiki page URL: {page.Url}");
-                _logger.LogInformation($"Wiki page action: {page.Action}");
-                _logger.LogInformation($"Wiki page title: {page.Title}");
-            }
-        }
+       var wikiPage = System.Text.Json.JsonSerializer.Deserialize<GitHubWikiEventPayload>(requestBody);
+                 //_logger.LogInformation($"Wiki page '{page.page_name}' was {page.action} by {payload.sender.login}.");
+       
+        _logger.LogInformation($"Wiki page action: {wikiPage?.action}");
+        _logger.LogInformation($"Wiki page: {wikiPage?.pages?.title}");
+        _logger.LogInformation($"Wiki page title: {wikiPage?.repository?.name}");
+             
         var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
         await response.WriteStringAsync("Webhook received and processed.");
 

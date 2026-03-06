@@ -1,20 +1,29 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.DataProtection.Repositories;
+using System.Text.Json.Serialization;
 
 namespace WikiWebHookFunction
 {
     public class GitHubWikiEventPayload
     {
-        [JsonPropertyName("pages")]
-        public List<WikiPage> pages { get; set; }
+         
+        public string action { get; set; }
+        public WikiPage pages { get; set; }
+        public Repository repository{ get; set; }
     }
+
+    public class Repository
+    {
+        public string name { get; set; }
+    }
+
     public class WikiPage
     {
-        [JsonPropertyName("action")]
-        public string Action { get; set; }
+        [JsonPropertyName("page_name")]
+        public string page_name { get; set; }
 
         [JsonPropertyName("title")]
-        public string Title { get; set; }
-        [JsonPropertyName("html_url")]
-        public string Url { get; set; }
+        public string title { get; set; }
+        [JsonPropertyName("url")]
+        public string url { get; set; }
 	} 
 }

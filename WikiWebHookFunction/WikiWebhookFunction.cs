@@ -17,7 +17,7 @@ public class WikiWebhookFunction
     }
 
     [Function("GitHubWikiWebhook")]
-    public async Task<HttpRequestData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
     {
         _logger.LogInformation("Github webhook received.");
 

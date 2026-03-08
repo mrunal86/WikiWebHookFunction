@@ -2,14 +2,16 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Text.Json;
-using System.Linq;
 
 namespace WikiWebHookFunction;
 
@@ -31,6 +33,11 @@ public class WikiWebhookFunction
         _logger.LogInformation("Github webhook received.");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        foreach (var header in req.Headers)
+        {
+            _logger.LogInformation($"Header: {header.Key}, Value: {string.Join(", ", header.Value)}");
+        }
+        _logger.LogInformation($"Request Body: {requestBody}");
 
         if (!req.Headers.TryGetValues("X-Hub-Signature-256", out var signatureHeader))
         {

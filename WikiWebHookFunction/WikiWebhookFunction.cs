@@ -33,12 +33,7 @@ public class WikiWebhookFunction
         _logger.LogInformation("Github webhook received.");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        foreach (var header in req.Headers)
-        {
-            _logger.LogInformation($"Header: {header.Key}, Value: {string.Join(", ", header.Value)}");
-        }
-        _logger.LogInformation($"Request Body: {requestBody}");
-
+        
         if (!req.Headers.TryGetValues("X-Hub-Signature-256", out var signatureHeader))
         {
             var unauthorised = req.CreateResponse(HttpStatusCode.Unauthorized);

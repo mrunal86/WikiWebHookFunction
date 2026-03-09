@@ -79,14 +79,13 @@ public class WikiWebhookFunction
 
         return response;
     }
-    
+
     private bool IsValidSignature(string body, string signature)
     {
         var key = Encoding.UTF8.GetBytes(_secret);
         using var hmac = new HMACSHA256(key);
 
-        var normalizedBody = body.Replace("\r\n", "\n").Trim();
-        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(normalizedBody));
+        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(body));
         var computedSignature = "sha256=" + Convert.ToHexString(hash).ToLower();
 
         _logger.LogInformation($"Received Signature: {signature}");
